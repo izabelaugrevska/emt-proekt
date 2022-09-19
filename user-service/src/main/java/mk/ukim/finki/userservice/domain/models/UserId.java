@@ -1,17 +1,15 @@
-package mk.ukim.finki.recipecatalog.domain.valueobjects;
+package mk.ukim.finki.userservice.domain.models;
 
 import mk.ukim.finki.sharedkernel.domain.base.DomainObjectId;
+import org.springframework.lang.NonNull;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class UserId extends DomainObjectId {
 
     private UserId() {
         super(UserId.randomId(UserId.class).getId());
     }
 
-    public UserId(String uuid) {
+    public UserId(@NonNull String uuid) {
         super(uuid);
     }
 
