@@ -8,11 +8,13 @@ import java.time.Instant;
 public class DomainEvent {
 
     private String topic;
+    private String queue;
     private Instant occurredOn;
 
-    public DomainEvent(String topic) {
+    public DomainEvent(String topic, String queue) {
         this.occurredOn = Instant.now();
         this.topic = topic;
+        this.queue = queue;
     }
 
 }

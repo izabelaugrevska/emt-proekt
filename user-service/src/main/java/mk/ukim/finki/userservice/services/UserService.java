@@ -1,6 +1,7 @@
 package mk.ukim.finki.userservice.services;
 
 import mk.ukim.finki.userservice.domain.models.User;
+import mk.ukim.finki.userservice.domain.models.UserFavoriteRecipes;
 import mk.ukim.finki.userservice.domain.models.UserId;
 import mk.ukim.finki.userservice.domain.models.UserWeight;
 import mk.ukim.finki.userservice.domain.valueobjects.RecipeId;
@@ -12,14 +13,14 @@ public interface UserService {
 
     User findByUserId(UserId id);
 
-    UserWeight addCurrentWeight(UserId id, UserWeight userWeight);
+    UserWeight addCurrentWeight(UserId userId, int weight);
 
     List<UserWeight> getWeightReportForPeriodAfter(UserId id, LocalDate date);
 
     double calculateCalories(UserId id);
 
-    User addFavoriteRecipe(UserId userId, RecipeId recipeId);
+    UserFavoriteRecipes addFavoriteRecipe(UserId userId, RecipeId recipeId);
 
-    User removeFavoriteRecipe(UserId userId, RecipeId recipeId);
+    void removeFavoriteRecipe(UserId userId, RecipeId recipeId);
 
 }

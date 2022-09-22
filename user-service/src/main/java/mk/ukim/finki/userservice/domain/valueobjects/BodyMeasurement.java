@@ -2,6 +2,7 @@ package mk.ukim.finki.userservice.domain.valueobjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import mk.ukim.finki.sharedkernel.domain.base.ValueObject;
 
 import javax.persistence.Embeddable;
@@ -27,4 +28,9 @@ public class BodyMeasurement implements ValueObject {
     @Min(40)
     private final int startWeight;
 
+    public BodyMeasurement() {
+        this.sex = Sex.UNKNOWN;
+        this.height = 0;
+        this.startWeight = 0;
+    }
 }

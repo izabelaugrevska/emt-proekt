@@ -4,7 +4,7 @@ import mk.ukim.finki.sharedkernel.domain.base.DomainObjectId;
 
 public class UserWeightId extends DomainObjectId {
 
-    private UserWeightId() {
+    public UserWeightId() {
         super(UserWeightId.randomId(UserWeightId.class).getId());
     }
 

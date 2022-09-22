@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 
 public class UserId extends DomainObjectId {
 
-    private UserId() {
+    public UserId() {
         super(UserId.randomId(UserId.class).getId());
     }
 

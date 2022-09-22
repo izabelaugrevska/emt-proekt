@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class UserId extends DomainObjectId {
 
-    private UserId() {
+    public UserId() {
         super(UserId.randomId(UserId.class).getId());
     }
 

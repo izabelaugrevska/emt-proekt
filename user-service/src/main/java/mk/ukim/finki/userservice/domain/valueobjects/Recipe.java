@@ -9,7 +9,6 @@ import mk.ukim.finki.sharedkernel.domain.base.ValueObject;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 public class Recipe implements ValueObject {
 
     private final RecipeId id;
@@ -18,7 +17,7 @@ public class Recipe implements ValueObject {
     private final String description;
     private final int likes;
 
-    private Recipe() {
+    public Recipe() {
         this.id = RecipeId.randomId(RecipeId.class);
         this.title = "";
         this.dateCreated = null;

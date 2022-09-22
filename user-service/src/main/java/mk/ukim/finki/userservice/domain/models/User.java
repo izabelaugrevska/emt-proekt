@@ -1,9 +1,11 @@
 package mk.ukim.finki.userservice.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import mk.ukim.finki.sharedkernel.domain.base.AbstractEntity;
 import mk.ukim.finki.userservice.domain.valueobjects.BodyMeasurement;
 import mk.ukim.finki.userservice.domain.valueobjects.Recipe;
+import mk.ukim.finki.userservice.domain.valueobjects.RecipeId;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,9 +24,8 @@ public class User extends AbstractEntity<UserId> {
     private String username;
     private String email;
     private String password;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
-
-    @Embedded
     private BodyMeasurement measurement;
 
     @Enumerated(EnumType.STRING)
@@ -33,14 +34,7 @@ public class User extends AbstractEntity<UserId> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "user")
     private List<UserWeight> listOfWeights = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_favorite_recipes",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-    private List<Recipe> favoriteRecipes = new ArrayList<>();
-
-    private User() {
+    public User() {
         super(UserId.randomId(UserId.class));
     }
 
@@ -54,18 +48,6 @@ public class User extends AbstractEntity<UserId> {
         user.measurement = measurement;
         user.activityLevel = activityLevel;
         return user;
-    }
-
-    public void addWeight(UserWeight userWeight) {
-        listOfWeights.add(userWeight);
-    }
-
-    public void addFavoriteRecipe(Recipe recipe) {
-        favoriteRecipes.add(recipe);
-    }
-
-    public void removeFavoriteRecipe(Recipe recipe) {
-        favoriteRecipes.remove(recipe);
     }
 
 }

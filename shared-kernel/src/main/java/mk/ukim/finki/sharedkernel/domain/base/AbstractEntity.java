@@ -15,7 +15,7 @@ public class AbstractEntity<ID extends DomainObjectId> {
     @EmbeddedId
     private ID id;
 
-    protected AbstractEntity() {
+    public AbstractEntity() {
     }
 
     /**
@@ -23,12 +23,12 @@ public class AbstractEntity<ID extends DomainObjectId> {
      *
      * @param source the entity to copy from.
      */
-    protected AbstractEntity(@NonNull AbstractEntity<ID> source) {
+    public AbstractEntity(@NonNull AbstractEntity<ID> source) {
         Objects.requireNonNull(source, "source must not be null");
         this.id = source.id;
     }
 
-    protected AbstractEntity(@NonNull ID id) {
+    public AbstractEntity(@NonNull ID id) {
         this.id = Objects.requireNonNull(id, "id must not be null");
     }
 

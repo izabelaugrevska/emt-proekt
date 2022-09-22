@@ -1,6 +1,7 @@
 package mk.ukim.finki.userservice.xport.rest;
 
 import mk.ukim.finki.userservice.domain.models.User;
+import mk.ukim.finki.userservice.domain.models.UserFavoriteRecipes;
 import mk.ukim.finki.userservice.domain.models.UserId;
 import mk.ukim.finki.userservice.domain.models.UserWeight;
 import mk.ukim.finki.userservice.domain.valueobjects.RecipeId;
@@ -8,6 +9,9 @@ import mk.ukim.finki.userservice.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,20 +46,20 @@ public class UserResource {
 
     @PostMapping("/{userId}/add-new-weight")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserWeight addWeight(@PathVariable String userId, @RequestBody UserWeight userWeight) {
-        return userService.addCurrentWeight(UserId.of(userId), userWeight);
+    public UserWeight addWeight(@PathVariable String userId,@NotNull @Min(40) @RequestParam int weight) {
+        return userService.addCurrentWeight(UserId.of(userId), weight);
     }
 
     @PatchMapping("/{userId}/add-favorite-recipe/{recipeId}")
     @ResponseStatus(HttpStatus.OK)
-    public User addFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
+    public UserFavoriteRecipes addFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
         return userService.addFavoriteRecipe(UserId.of(userId), RecipeId.of(recipeId));
     }
 
     @PatchMapping("/{userId}/remove-favorite-recipe/{recipeId}")
     @ResponseStatus(HttpStatus.OK)
-    public User removeFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
-        return userService.removeFavoriteRecipe(UserId.of(userId), RecipeId.of(recipeId));
+    public void removeFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
+        userService.removeFavoriteRecipe(UserId.of(userId), RecipeId.of(recipeId));
     }
 
 }

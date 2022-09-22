@@ -10,7 +10,7 @@ public class FavoriteRecipeAddedEvent extends DomainEvent {
     private String recipeId;
 
     public FavoriteRecipeAddedEvent(String recipeId) {
-        super(TopicHolder.TOPIC_FAVORITE_RECIPE_ADDED);
+        super(TopicHolder.TOPIC_FAVORITE_RECIPE_ADDED, TopicHolder.QUEUE_FAVORITE_RECIPE_ADDED);
         this.recipeId = recipeId;
     }
 

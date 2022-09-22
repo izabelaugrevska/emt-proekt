@@ -21,15 +21,16 @@ public class UserWeight extends AbstractEntity<UserWeightId> implements Comparab
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    private UserWeight() {
+    public UserWeight() {
         super(UserWeightId.randomId(UserWeightId.class));
         dateCreated = LocalDate.now();
     }
 
-    public UserWeight(int weight, User user) {
-        super(UserWeightId.randomId(UserWeightId.class));
-        this.weight = weight;
-        this.user = user;
+    public static UserWeight build(int weight, User user) {
+        UserWeight uw = new UserWeight();
+        uw.weight = weight;
+        uw.user = user;
+        return uw;
     }
 
     @Override

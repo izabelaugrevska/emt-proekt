@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import mk.ukim.finki.sharedkernel.domain.events.recipes.FavoriteRecipeAddedEvent;
 import mk.ukim.finki.sharedkernel.domain.events.recipes.FavoriteRecipeRemovedEvent;
 import mk.ukim.finki.sharedkernel.infra.DomainEventPublisher;
-import mk.ukim.finki.userservice.domain.exceptions.RecipeNotFoundException;
+import mk.ukim.finki.userservice.domain.exceptions.UserFavoriteRecipeNotFoundException;
 import mk.ukim.finki.userservice.domain.exceptions.UserNotFoundException;
 import mk.ukim.finki.userservice.domain.models.User;
+import mk.ukim.finki.userservice.domain.models.UserFavoriteRecipes;
 import mk.ukim.finki.userservice.domain.models.UserId;
 import mk.ukim.finki.userservice.domain.models.UserWeight;
+import mk.ukim.finki.userservice.domain.repository.UserFavoriteRecipesRepository;
 import mk.ukim.finki.userservice.domain.repository.UserRepository;
 import mk.ukim.finki.userservice.domain.repository.UserWeightRepository;
-import mk.ukim.finki.userservice.domain.valueobjects.Recipe;
 import mk.ukim.finki.userservice.domain.valueobjects.RecipeId;
 import mk.ukim.finki.userservice.domain.valueobjects.Sex;
 import mk.ukim.finki.userservice.services.UserService;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserWeightRepository weightRepository;
+    private final UserFavoriteRecipesRepository userRecipesRepository;
     private final RecipeClient recipeClient;
     private final DomainEventPublisher publisher;
 
@@ -40,17 +42,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserWeight addCurrentWeight(UserId id, UserWeight userWeight) {
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        user.addWeight(userWeight);
-        userRepository.save(user);
-        return userWeight;
+    public UserWeight addCurrentWeight(UserId userId, int weight) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        UserWeight saved = weightRepository.save(UserWeight.build(weight, user));
+        return saved;
     }
 
     @Override
     public List<UserWeight> getWeightReportForPeriodAfter(UserId id, LocalDate date) {
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return weightRepository.findAllByUserAndDate(user, date);
+        return weightRepository.findAllByUserAndDate(id, date);
     }
 
     @Override
@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
         int height = user.getMeasurement().getHeight();
         double activityFactor = user.getActivityLevel().value;
         int age = getAge(user.getDateOfBirth());
+        Sex sex = user.getMeasurement().getSex();
+
+        if(weight == 0 || height == 0 || user.getActivityLevel() == null || age <= 0 || sex.equals(Sex.UNKNOWN)) {
+            throw new RuntimeException("Need all parameters to calculate calories");
+        }
 
         if (user.getMeasurement().getSex().equals(Sex.MALE)) {
             return activityFactor * (66 + (13.7 * weight) + (5 * height) - (6.8 * age));
@@ -70,23 +75,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addFavoriteRecipe(UserId userId, RecipeId recipeId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Recipe recipe = recipeClient.findById(recipeId).orElseThrow(RecipeNotFoundException::new);
-        user.addFavoriteRecipe(recipe);
-        User saved = userRepository.save(user);
-        publisher.publish(new FavoriteRecipeAddedEvent(recipe.getId().getId()));
+    public UserFavoriteRecipes addFavoriteRecipe(UserId userId, RecipeId recipeId) {
+        UserFavoriteRecipes favoriteRecipes = UserFavoriteRecipes.build(userId, recipeId);
+        UserFavoriteRecipes saved = userRecipesRepository.save(favoriteRecipes);
+        publisher.publish(new FavoriteRecipeAddedEvent(recipeId.getId()));
         return saved;
     }
 
     @Override
-    public User removeFavoriteRecipe(UserId userId, RecipeId recipeId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Recipe recipe = recipeClient.findById(recipeId).orElseThrow(RecipeNotFoundException::new);
-        user.removeFavoriteRecipe(recipe);
-        User saved = userRepository.save(user);
-        publisher.publish(new FavoriteRecipeRemovedEvent(recipe.getId().getId()));
-        return saved;
+    public void removeFavoriteRecipe(UserId userId, RecipeId recipeId) {
+        UserFavoriteRecipes ufr = userRecipesRepository.findByUserIdAndRecipeId(userId, recipeId)
+                .orElseThrow(UserFavoriteRecipeNotFoundException::new);
+        userRecipesRepository.deleteById(ufr.getId());
+        publisher.publish(new FavoriteRecipeRemovedEvent(recipeId.getId()));
     }
 
     private int getAge(LocalDate birthday) {

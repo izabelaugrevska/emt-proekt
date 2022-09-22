@@ -2,6 +2,7 @@ package mk.ukim.finki.sharedkernel.domain.base;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.Embeddable;
@@ -11,6 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
+@NoArgsConstructor
 @Embeddable
 @Getter
 public class DomainObjectId implements Serializable {
@@ -18,7 +20,7 @@ public class DomainObjectId implements Serializable {
     private String id;
 
     @JsonCreator
-    protected DomainObjectId(@NonNull String uuid) {
+    public DomainObjectId(@NonNull String uuid) {
         this.id = Objects.requireNonNull(uuid, "uuid must not be null");
     }
 

@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class RecipeId extends DomainObjectId {
 
-    private RecipeId() {
+    public RecipeId() {
         super(RecipeId.randomId(RecipeId.class).getId());
     }
 
