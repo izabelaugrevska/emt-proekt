@@ -6,10 +6,7 @@ import lombok.Setter;
 import mk.ukim.finki.recipecatalog.domain.valueobjects.UserId;
 import mk.ukim.finki.sharedkernel.domain.base.AbstractEntity;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -18,9 +15,11 @@ import java.time.LocalDate;
 @Setter
 public class Recipe extends AbstractEntity<RecipeId> {
     private int likes = 0;
+
     private String title;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateCreated;
+    @Lob
     private String description;
     @AttributeOverride(name = "id", column = @Column(name = "creator_id", nullable = false))
     private UserId creatorId;
