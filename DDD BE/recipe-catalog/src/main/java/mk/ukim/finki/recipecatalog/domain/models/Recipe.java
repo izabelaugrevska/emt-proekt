@@ -19,6 +19,7 @@ import java.time.LocalDate;
 public class Recipe extends AbstractEntity<RecipeId> {
     private int likes = 0;
     private String title;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateCreated;
     private String description;
     @AttributeOverride(name = "id", column = @Column(name = "creator_id", nullable = false))

@@ -75,19 +75,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserFavoriteRecipes addFavoriteRecipe(UserId userId, RecipeId recipeId) {
+    public UserFavoriteRecipes addFavoriteRecipe(String userId, String recipeId) {
         UserFavoriteRecipes favoriteRecipes = UserFavoriteRecipes.build(userId, recipeId);
         UserFavoriteRecipes saved = userRecipesRepository.save(favoriteRecipes);
-        publisher.publish(new FavoriteRecipeAddedEvent(recipeId.getId()));
+        publisher.publish(new FavoriteRecipeAddedEvent(recipeId));
         return saved;
     }
 
     @Override
-    public void removeFavoriteRecipe(UserId userId, RecipeId recipeId) {
+    public void removeFavoriteRecipe(String userId, String recipeId) {
         UserFavoriteRecipes ufr = userRecipesRepository.findByUserIdAndRecipeId(userId, recipeId)
                 .orElseThrow(UserFavoriteRecipeNotFoundException::new);
         userRecipesRepository.deleteById(ufr.getId());
-        publisher.publish(new FavoriteRecipeRemovedEvent(recipeId.getId()));
+        publisher.publish(new FavoriteRecipeRemovedEvent(recipeId));
     }
 
     private int getAge(LocalDate birthday) {

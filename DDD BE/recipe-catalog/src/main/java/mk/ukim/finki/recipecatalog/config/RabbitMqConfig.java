@@ -2,7 +2,6 @@ package mk.ukim.finki.recipecatalog.config;
 
 import mk.ukim.finki.sharedkernel.domain.config.TopicHolder;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

@@ -4,14 +4,18 @@ import lombok.AllArgsConstructor;
 import mk.ukim.finki.recipecatalog.domain.models.RecipeId;
 import mk.ukim.finki.recipecatalog.services.RecipeService;
 import mk.ukim.finki.sharedkernel.domain.config.TopicHolder;
+import mk.ukim.finki.sharedkernel.domain.events.DomainEvent;
 import mk.ukim.finki.sharedkernel.domain.events.recipes.FavoriteRecipeAddedEvent;
 import mk.ukim.finki.sharedkernel.domain.events.recipes.FavoriteRecipeRemovedEvent;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class RecipeEventListener {
+public class RecipeEventListener implements RabbitListenerConfigurer {
 
     private final RecipeService recipeService;
 
@@ -25,4 +29,8 @@ public class RecipeEventListener {
             recipeService.decreaseLikes(RecipeId.of(event.getRecipeId()));
     }
 
+    @Override
+    public void configureRabbitListeners(RabbitListenerEndpointRegistrar rabbitListenerEndpointRegistrar) {
+
+    }
 }

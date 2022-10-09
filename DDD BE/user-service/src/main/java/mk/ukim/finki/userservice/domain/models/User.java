@@ -47,6 +47,8 @@ public class User extends AbstractEntity<UserId> {
         user.dateOfBirth = dateOfBirth;
         user.measurement = measurement;
         user.activityLevel = activityLevel;
+        UserWeight initialWeight = UserWeight.build(measurement.getStartWeight(), user);
+        user.listOfWeights.add(initialWeight);
         return user;
     }
 

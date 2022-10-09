@@ -1,5 +1,7 @@
 package mk.ukim.finki.userservice.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import mk.ukim.finki.sharedkernel.domain.base.AbstractEntity;
 
@@ -15,10 +17,12 @@ import java.time.LocalDate;
 public class UserWeight extends AbstractEntity<UserWeightId> implements Comparable<UserWeight> {
 
     private int weight;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateCreated;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 
     public UserWeight() {

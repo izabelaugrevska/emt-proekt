@@ -19,8 +19,8 @@ public interface UserService {
 
     double calculateCalories(UserId id);
 
-    UserFavoriteRecipes addFavoriteRecipe(UserId userId, RecipeId recipeId);
+    UserFavoriteRecipes addFavoriteRecipe(String userId, String recipeId);
 
-    void removeFavoriteRecipe(UserId userId, RecipeId recipeId);
+    void removeFavoriteRecipe(String userId, String recipeId);
 
 }

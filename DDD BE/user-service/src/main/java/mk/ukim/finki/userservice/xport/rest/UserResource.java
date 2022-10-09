@@ -1,11 +1,13 @@
 package mk.ukim.finki.userservice.xport.rest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import mk.ukim.finki.userservice.domain.models.User;
 import mk.ukim.finki.userservice.domain.models.UserFavoriteRecipes;
 import mk.ukim.finki.userservice.domain.models.UserId;
 import mk.ukim.finki.userservice.domain.models.UserWeight;
 import mk.ukim.finki.userservice.domain.valueobjects.RecipeId;
 import mk.ukim.finki.userservice.services.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,9 +40,11 @@ public class UserResource {
         return userService.calculateCalories(UserId.of(userId));
     }
 
-    @GetMapping("/{userId}/weightReport")
+    @GetMapping("/{userId}/weight-report")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserWeight> getReportForPeriod(@PathVariable String userId, @RequestParam LocalDate startDate) {
+    public List<UserWeight> getReportForPeriod(@PathVariable String userId,
+                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                               @RequestParam LocalDate startDate) {
         return userService.getWeightReportForPeriodAfter(UserId.of(userId), startDate);
     }
 
@@ -53,13 +57,13 @@ public class UserResource {
     @PatchMapping("/{userId}/add-favorite-recipe/{recipeId}")
     @ResponseStatus(HttpStatus.OK)
     public UserFavoriteRecipes addFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
-        return userService.addFavoriteRecipe(UserId.of(userId), RecipeId.of(recipeId));
+        return userService.addFavoriteRecipe(userId, recipeId);
     }
 
     @PatchMapping("/{userId}/remove-favorite-recipe/{recipeId}")
     @ResponseStatus(HttpStatus.OK)
     public void removeFavoriteRecipe(@PathVariable String userId, @PathVariable String recipeId) {
-        userService.removeFavoriteRecipe(UserId.of(userId), RecipeId.of(recipeId));
+        userService.removeFavoriteRecipe(userId, recipeId);
     }
 
 }
